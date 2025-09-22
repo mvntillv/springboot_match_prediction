@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: jacoco-badge-${{ github.event.workflow_run.id }}
@@ -20,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout (just to have the repo context)
+      - name: Checkout (repo context)
         uses: actions/checkout@v4
 
       - name: Download JaCoCo XML/CSV from CI run
@@ -29,6 +30,9 @@ jobs:
           name: jacoco-report-files
           run-id: ${{ github.event.workflow_run.id }}
           path: build/reports/jacoco/test
+
+      - name: List downloaded files
+        run: ls -Ral build/reports/jacoco/test || true
 
       - name: Create JaCoCo badge (no commit)
         uses: cicirello/jacoco-badge-generator@v2
