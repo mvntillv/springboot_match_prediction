@@ -24,6 +24,9 @@ jobs:
           java-version: "24"
           cache: gradle
 
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
       - name: Re-generate JaCoCo reports (XML/CSV)
         run: ./gradlew jacocoTestReport
 
