@@ -1,0 +1,42 @@
+name: Continuous integration
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 25 (Temurin) + Gradle cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Build & Test (with JaCoCo)
+        run: ./gradlew clean build jacocoTestReport --stacktrace
+
+      - name: Upload JUnit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-report
+          path: build/test-results/test
+
+      - name: Upload JaCoCo HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: build/reports/jacoco/test/html

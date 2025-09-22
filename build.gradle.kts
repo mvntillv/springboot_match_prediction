@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.5.6"
 	id("io.spring.dependency-management") version "1.1.7"
+    jacoco
 }
 
 group = "com.mvntillv"
@@ -24,6 +25,8 @@ repositories {
 	mavenCentral()
 }
 
+val springdocVersion = "2.8.13"
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -32,6 +35,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -47,4 +51,27 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco {
+    toolVersion = "0.8.13"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(true)
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.apache.commons" && requested.name == "commons-lang3") {
+            useVersion("3.18.0")
+            because("Mitigar CVE: Usar >= 3.18.0")
+        }
+    }
 }
