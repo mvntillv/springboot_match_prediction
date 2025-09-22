@@ -40,3 +40,11 @@ jobs:
         with:
           name: jacoco-report
           path: build/reports/jacoco/test/html
+
+      - name: Upload JaCoCo XML/CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report-files
+          path: |
+            build/reports/jacoco/test/jacocoTestReport.xml
+            build/reports/jacoco/test/jacocoTestReport.csv
