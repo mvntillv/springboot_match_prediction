@@ -11,7 +11,7 @@ description = "Football matches prediction using Markov chains (Spring Boot)"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
+		languageVersion = JavaLanguageVersion.of(24)
 	}
 }
 
